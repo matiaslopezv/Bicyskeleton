@@ -1,9 +1,9 @@
-from component import Frenos
+from component import Frenos, SistemaTransmision, Frenos, Bielas
 
 class Bicicleta:
     def __init__(self, nombre_perfil:str, cuadro, frenos):
         self.cuadro = cuadro
-        self.transmision = {}
+        self.transmision = SistemaTransmision()
         self.frenos = frenos
         self.ruedas = {}
         self.suspension = {}
@@ -33,8 +33,8 @@ class Cuadro(Bicicleta):
 
 cuadro = Cuadro("Surly", "Crosscheck", "68mm wide, standard English threaded 1.37 x 24t", "Semi-horizontal dropouts")
 
-
-#Crear unos frenos
+# Crear unos frenos
 frenos = Frenos("Frenos de pinza", "Shimano", "Deore", "Caliper", "Perno")
+
 bicicleta = Bicicleta("mi bici", cuadro, frenos)
 print(bicicleta)
