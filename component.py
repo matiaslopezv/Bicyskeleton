@@ -15,23 +15,33 @@ class Transmision(Componente):
         super().__init__(nombre, fabricante, serie, tipo="Transmisión")
         self.velocidades = velocidades
     def __str__(self):
-        return f"Transmision tipo:{self.tipo}"
+        return f"{self.tipo}"
 
 class desviadorTrasero(Transmision):
-    def __init__(self, nombre:str, fabricante:str, serie:str, velocidades:int, caja_larga:bool, capacidad_max:int, capacidad_total:int):
+    def __init__(self, nombre:str, fabricante:str, serie:str, velocidades:int, caja:str, piñon_min:int, piñon_max:int, plato_min:int, plato_max:int, capacidad:0, dif_delantera:0, montaje:str):
         super().__init__(nombre, fabricante, serie, velocidades)
         self.tipo = "Desviador Trasero"
-        self.caja_larga = caja_larga
-        self.capacidad_max = capacidad_max
-        self.capacidad_total = capacidad_total
+        self.caja = caja
+        self.piñon_min = piñon_min
+        self.piñon_max = piñon_max
+        self.plato_min = plato_min
+        self.plato_max = plato_max
+        self.capacidad =  (plato_max - plato_min)+(piñon_max - piñon_min)
+        self.dif_delantera =  plato_max - plato_min
+        self.montaje = montaje #directo/hanger(postiza)
+    def __str__(self):
+        return f"{self.nombre} - {self.fabricante} {self.serie} - velocidades{self.velocidades}v {self.piñon_min}t {self.piñon_max}t {self.plato_min}t {self.piñon_max}t {self.capacidad}t {self.dif_delantera}t {self.montaje}"
 
 class desviadorDelantero(Transmision):
-    def __init__(self, nombre:str, fabricante:str, serie:str, velocidades:int, caja_larga:bool, capacidad_max:int, capacidad_total:int):
+    def __init__(self, nombre:str, fabricante:str, serie:str, velocidades:int, montaje:str, diametro_abr:float, desarrollo_delantero:str, desarrollo_trasero:str):
         super().__init__(nombre, fabricante, serie, velocidades)
         self.tipo = "Desviador Delantero"
-        self.caja_larga = caja_larga
-        self.capacidad_max = capacidad_max
-        self.capacidad_total = capacidad_total   
+        self.montaje = montaje 
+        self.desarrollo_delantero = desarrollo_delantero
+        self.desarrollo_trasero = desarrollo_trasero
+        self.diametro_abr = diametro_abr
+    def __str__(self):
+        return f"{self.nombre} - {self.fabricante} {self.serie} - {self.velocidades}v {self.montaje} {self.diametro_abr}mm {self.desarrollo_delantero}v/{self.desarrollo_trasero}v"
 
 class Cassette(Transmision):
     def __init__(self, nombre:str, fabricante:str, serie:str, velocidades:int, dientes_min:int, dientes_max:int, nucleo_compatibilidad:str):
@@ -41,7 +51,7 @@ class Cassette(Transmision):
         self.dientes_max = dientes_max
         self.nucleo_compatibilidad = nucleo_compatibilidad
     def __str__(self):
-        return f"[{self.tipo}] {self.nombre} - {self.fabricante} ({self.serie}) - {self.velocidades}v ({self.dientes_min}-{self.dientes_max} dientes) - Núcleo: {self.nucleo_compatibilidad}"
+        return f"{self.nombre} - {self.fabricante} ({self.serie}) - {self.velocidades}v ({self.dientes_min}-{self.dientes_max} dientes) - Núcleo: {self.nucleo_compatibilidad}"
 
 class Cadena(Transmision):
     def __init__(self, nombre:str, fabricante:str, serie:str, velocidades:int, paso, compatibilidad_plato):
@@ -50,7 +60,7 @@ class Cadena(Transmision):
         self.paso = paso
         self.compatibilidad_plato = compatibilidad_plato
     def __str__(self):
-        return f"[{self.tipo}] {self.nombre} - {self.fabricante} ({self.serie}) - {self.paso} {self.compatibilidad_plato} "
+        return f"{self.nombre} - {self.fabricante} ({self.serie}) - {self.paso} {self.compatibilidad_plato} "
 
 class Plato(Transmision):
     def __init__(self, nombre:str, fabricante:str, serie:str, velocidades:int, dientes:int, bcd:float, compatibilidad_montaje:str):
@@ -60,7 +70,7 @@ class Plato(Transmision):
         self.bcd = bcd
         self.compatibilidad_montaje = compatibilidad_montaje
     def __str__(self):
-        return f"[{self.tipo}] {self.nombre} - {self.fabricante} ({self.serie}) - {self.bcd} {self.compatibilidad_montaje} "
+        return f"{self.nombre} - {self.fabricante} ({self.serie}) - {self.bcd} {self.compatibilidad_montaje} "
 
 class Bielas(Transmision):
     def __init__(self, nombre:str, fabricante:str, serie:str, velocidades:int, largo:int, tipo_eje:str, platos:list):
@@ -70,11 +80,10 @@ class Bielas(Transmision):
         self.tipo_eje = tipo_eje
         self.platos = platos
     def __str__(self):
-        return f"[{self.tipo}] {self.nombre} - {self.fabricante} ({self.serie}) - {self.largo} {self.tipo_eje} {self.platos}"
+        return f"{self.nombre} - {self.fabricante} ({self.serie}) - {self.largo} {self.tipo_eje} {self.platos}"
     
 class SistemaTransmision:
     def __init__(self):
-        # Los atributos son de los objetos de tus clases.
         self.desviador_delantero = None
         self.desviador_trasero = None
         self.cassette = None
@@ -82,7 +91,6 @@ class SistemaTransmision:
         self.bielas = None
     
     def __str__(self):
-        # Aquí imprimes los detalles de cada componente
         return (
             f"Sistema de Transmisión:\n"
             f"  - Desviador Delantero: {self.desviador_delantero}\n"
@@ -93,13 +101,6 @@ class SistemaTransmision:
         )
 #--------------------------------------------------------------------------------------------------------------------------------
 
-# class Frenos(Componente):
-#     def __init__(self, nombre:str, fabricante:str, serie:str, tipo_freno:str, montaje_caliper:str):
-#         super().__init__(nombre, fabricante, serie, tipo="Frenos", modelo=montaje_caliper)
-#         self.tipo_freno = tipo_freno
-#         self.montaje_caliper = montaje_caliper
-#     def __str__(self):
-#         return f"[{self.tipo}] - {self.fabricante} - {self.serie} - {self.tipo_freno} - {self.montaje_caliper}"
 class Frenos(Componente):
     def __init__(self, nombre, fabricante, serie, tipo):
         super().__init__(nombre, fabricante, serie, tipo="Frenos")
@@ -107,22 +108,33 @@ class Frenos(Componente):
         return f"[{self.tipo}]"
 
 class frenoDelantero(Frenos):#tipo: llanta o disco
-    def __init__(self, nombre:str, fabricante:str, serie:str, tipo:str, modelo:str, ):
-        super().__init__(nombre, fabricante, serie, tipo, modelo)
+    def __init__(self, nombre:str, fabricante:str, serie:str, tipo:str, modelo:str, tipo_freno:str, mec_hidr:bool):
+        super().__init__(nombre, fabricante, serie, tipo)
         self.tipo = "Freno Delantero"
         self.modelo = modelo
+        self.tipo_freno = tipo_freno
+        self.mec_hidr = mec_hidr
+    def __str__(self):
+        return f"{self.modelo} {self.tipo_freno}"    
 
-class frenoTrasero(Frenos):#tipo: llanta o disco
-    def __init__(self, nombre, fabricante, serie, tipo, modelo):
+class frenoTrasero(Frenos):#tipo: llanta o disco/ mec_hidr = mecanico(1) o hidraulico(0)
+    def __init__(self, nombre, fabricante, serie, tipo, modelo, tipo_freno:str, mec_hidr:bool):
         super().__init__(nombre, fabricante, serie, tipo)
         self.tipo="Freno Trasero"
         self.modelo = modelo
+        self.tipo_freno = tipo_freno
+        self.mec_hidr = mec_hidr 
+    def __str__(self):
+        return f"{self.modelo} {self.tipo_freno}"
 
 class manetaDeFrenos(Frenos):
-    def __init__(self, nombre, fabricante, serie, tipo, modelo):
+    def __init__(self, nombre, fabricante, serie, tipo, modelo, tipo_maneta:str):
         super().__init__(nombre, fabricante, serie, tipo)
         self.tipo="Maneta de Frenos"
         self.modelo = modelo
+        self.tipo_maneta = tipo_maneta
+    def __str__(self):
+        return f"{self.modelo} {self.tipo_maneta}"
 
 class SistemaFrenos():
     def __init__(self):
@@ -131,11 +143,11 @@ class SistemaFrenos():
         self.manetasDeFreno = None
     
     def __str__(self):
-        # Aquí imprimes los detalles de cada componente
+        
         return (
             f"Sistema de Frenos:\n"
             f"  - Freno Delantero: {self.frenoDelantero}\n"
-            f"  - Freno Trasero: {self.frenoTraserotrasero}\n"
+            f"  - Freno Trasero: {self.frenoTrasero}\n"
             f"  - Manetas de freno: {self.manetasDeFreno}"
         )
 
@@ -174,21 +186,31 @@ class Manillar(Componente):
         return f"[{self.tipo}] - {self.nombre} - {self.fabricante} - {self.ancho} - {self.diametro_potencia}"
 
 
-
-# # Crear un cassette
+# frontDesviador = desviadorDelantero("FD-R8000", "Shimano", "Ultegra", 11, "Abrazadera", 34.9, 2, 11)
+# rearDesviador = desviadorTrasero("M773", "Shimano", "Deore", 11, "GS", 11, 36, 12, 32, 0, 0, "Directo")
 # cassette = Cassette("Cassete", "Shimano", "Deore", 11, 11, 34, "HG")
-
-# # Crear una cadena
 # cadena = Cadena("Cadena Hg","Shimano","Deore XR", 11, 0.5, "Shimano/SRAM")
-
-# # Crear un plato
 # plato = Plato("Platos","Shimano","Deore XR", 11, 52, 110.0, "5 tornillos")
-
-# # Crear unas bielas con el plato
 # bielas = Bielas("Bielas","Shimano","Deore XR", 11, 175, "BB86", plato)
+# sistema_transmision = SistemaTransmision()
+# sistema_transmision.desviador_delantero = frontDesviador
+# sistema_transmision.desviador_trasero = rearDesviador
+# sistema_transmision.cassette = cassette
+# sistema_transmision.cadena = cadena
+# sistema_transmision.bielas = bielas
+
+# print(sistema_transmision)
 
 # #Crear unos frenos
-# frenos = Frenos("Frenos de pinza", "Shimano", "Deore", "Caliper", "Perno")
+# frenosDelantero = frenoDelantero("Frenos de pinza", "Shimano", "Deore", "Caliper", "BR-T4000", "V Brake", 0)
+# frenosTrasero = frenoDelantero("Frenos de pinza", "Shimano", "Deore", "Caliper", "BR-T4000", "V Brake", 0)
+# manetaFrenos = manetaDeFrenos("Manillas de Freno","Shimano", "Deore", "Solo frenos sin cambios", "AXS-44", "tipomaneta")
+# sistema_Frenos = SistemaFrenos()
+# sistema_Frenos.frenoDelantero = frenosDelantero
+# sistema_Frenos.frenoTrasero = frenosTrasero
+# sistema_Frenos.manetasDeFreno = manetaFrenos
+# print(sistema_Frenos)
+
 
 # # #crear una rueda
 # rueda = Rueda("Rueda", "Shimano", "Deore", 29, 25,"tipo_eje1", "HG")
